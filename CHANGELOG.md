@@ -1,4 +1,4 @@
-## ..1 2024-06-27 <dave at tiredofit dot ca>
+## 1.0.0 2024-06-27 <dave at tiredofit dot ca>
 
    ### Added
       - Debian Bookworm
