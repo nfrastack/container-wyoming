@@ -1,0 +1,62 @@
+#!/command/with-contenv bash
+
+source /assets/functions/00-container
+PROCESS_NAME="piper"
+prepare_service defaults all
+
+check_container_initialized
+check_service_initialized init
+
+case "${PIPER_LISTEN_TYPE,,}" in
+    tcp )
+        piper_listen="tcp://${PIPER_LISTEN_IP}:${PIPER_LISTEN_PORT}"
+    ;;
+esac
+
+case "${PIPER_LOG_LEVEL,,}" in
+    debug )
+        piper_loglevel="--debug"
+    ;;
+esac
+
+case "${PIPER_LOG_TYPE,,}" in
+    both )
+        SHOW_OUTPUT=TRUE
+        touch "${PIPER_LOG_PATH}"/"${PIPER_LOG_FILE}"
+        chown -R "${PIPER_USER}" "${PIPER_LOG_PATH}"/"${LOG_FILE}"
+    ;;
+    console )
+        SHOW_OUTPUT=TRUE
+        LOG_PATH=/dev
+        LOG_FILE=/null
+    ;;
+    file )
+        SHOW_OUTPUT=FALSE
+        touch "${PIPER_LOG_PATH}"/"${PIPER_LOG_FILE}"
+        chown -R "${PIPER_USER}" "${PIPER_LOG_PATH}"/"${PIPER_LOG_FILE}"
+    ;;
+    none )
+        SHOW_OUTPUT=FALSE
+        LOG_PATH=/dev
+        LOG_FILE=null
+    ;;
+esac
+if var_true "${PIPER_UPDATE_VOICES}" ; then piper_update_voices="--update-voices" ; fi
+
+liftoff
+
+print_start "Starting Piper ${PIPER_VERSION}"
+source /opt/piper/bin/activate
+cd /opt/piper/bin
+exec s6-setuidgid ${PIPER_USER}  \
+                                    python \
+                                            -m wyoming_piper \
+                                    --piper /opt/piper/piper \
+                                    ${piper_loglevel} --uri "${piper_listen}" \
+                                    --length-scale "${PIPER_LENGTH_SCALE}" \
+                                    --noise-scale "${PIPER_NOISE_SCALE}" \
+                                    --noise-w "${PIPER_NOISE_WEIGHT}" \
+                                    --speaker "${PIPER_SPEAKER}" \
+                                    --voice "${PIPER_VOICE}" \
+                                    --max-piper-procs "${PIPER_PROCESS_LIMIT}" \
+                                    --data-dir "${PIPER_DATA_PATH}" ${piper_update_voices} 2>&1 1>> "${PIPER_LOG_PATH}"/"${PIPER_LOG_FILE}" |  silent sudo -u "${PIPER_USER}" tee -a "${PIPER_LOG_PATH}"/"${PIPER_LOG_FILE}"

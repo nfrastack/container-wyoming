@@ -1,0 +1,60 @@
+#!/command/with-contenv bash
+
+bootstrap_filesystem() {
+    if [ ! -d "${DATA_PATH}" ]; then
+        mkdir -p "${DATA_PATH}"
+    fi
+    if [ $(stat -c %G "${DATA_PATH}") != "wyoming" ] ; then chown root:wyoming "${DATA_PATH}" ; fi
+
+    if [ ! -d "${LOG_PATH}" ]; then
+        mkdir -p "${LOG_PATH}"
+    fi
+    if [ $(stat -c %G "${LOG_PATH}") != "wyoming}" ] ; then chown -R root:wyoming "${LOG_PATH}" ; fi
+}
+
+setup_container_mode() {
+    if [ -f "/tmp/.container/wyoming/.mode-env" ]; then
+        print_debug "[setup_container_mode] Importing MODE environment generated variables"
+        source /tmp/.container/wyoming/.mode-env
+    else
+        mkdir -p /tmp/.container/wyoming/
+        if [ "${MODE,,}" = "aio" ] || [ "${MODE,,}" = "all" ] ; then
+            print_debug "[setup_container_mode] Container Mode: ALL"
+            print_debug "[setup_container_mode] Creating MODE environment generated variables"
+            echo "ENABLE_OPENWAKEWORD=TRUE" >> /tmp/.container/wyoming/.mode-env
+            echo "ENABLE_PIPER=TRUE" >> /tmp/.container/wyoming/.mode-env
+            echo "ENABLE_WHISPER=TRUE" >> /tmp/.container/wyoming/.mode-env
+        else
+            modes=$(echo "${MODE,,}" | tr "," "\n")
+            for mode in $modes
+            do
+                case "${mode,,}" in
+                    "openwakeword" )
+                        print_debug "[setup_container_mode] Enabling Container Mode for: OPENWAKEWORD"
+                        service_start 20-openwakeword
+                        echo "ENABLE_OPENWAKEWORD=TRUE" >> /tmp/.container/wyoming/.mode-env
+                    ;;
+                    "piper" )
+                        service_start 30-piper
+                        print_debug "[setup_container_mode] Enabling Container Mode for: PIPER"
+                        echo "ENABLE_PIPER=TRUE" >> /tmp/.container/wyoming/.mode-env
+                    ;;
+                    "whisper" )
+                        service_start 40-whisper
+                        print_debug "[setup_container_mode] Enabling Container Mode for: WHISPER"
+                        echo "ENABLE_WHISPER=TRUE" >> /tmp/.container/wyoming/.mode-env
+                    ;;
+                   "none" )
+                        print_debug "[setup_container_mode] Do Nothing"
+                        echo "ENABLE_NOTHING=TRUE" >> /tmp/.container/wyoming/.mode-env
+                    ;;
+                    *)
+                        print_error "[setup_container_mode] Unknown 'MODE' environment variable - exitting.."
+                        exit 1
+                    ;;
+                esac
+            done
+        fi
+        source /tmp/.container/wyoming/.mode-env
+    fi
+}

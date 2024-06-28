@@ -1,0 +1,21 @@
+#!/command/with-contenv bash
+
+source /assets/functions/00-container
+source /assets/defaults/10-wyoming
+source /assets/functions/10-wyoming
+source /tmp/.container/wyoming/.mode-env
+PROCESS_NAME="openwakeword"
+
+if [ ! -f "/tmp/.container/container-restart" ] ; then
+    if var_true "${ENABLE_OPENWAKEWORD}" ; then
+        print_debug "Configuring OpenWakeWord"
+        source /assets/defaults/20-openwakeword
+        source /assets/functions/20-openwakeword
+        openwakeword_bootstrap_filesystem
+        print_debug "Finished Configuring OpenWakeWord"
+    else
+        service_stop 20-openwakeword
+    fi
+fi
+
+liftoff

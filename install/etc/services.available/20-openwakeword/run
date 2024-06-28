@@ -1,0 +1,61 @@
+#!/command/with-contenv bash
+
+source /assets/functions/00-container
+PROCESS_NAME="openwakeword"
+prepare_service defaults all
+
+check_container_initialized
+check_service_initialized init
+
+case "${OPENWAKEWORD_LISTEN_TYPE,,}" in
+    tcp )
+        openwakeword_listen="tcp://${OPENWAKEWORD_LISTEN_IP}:${OPENWAKEWORD_LISTEN_PORT}"
+    ;;
+esac
+
+case "${OPENWAKEWORD_LOG_LEVEL,,}" in
+    debug )
+        openwakeword_loglevel="--debug"
+    ;;
+    trace )
+        openwakeword_loglevel="--debug --debug-probability"
+    ;;
+esac
+
+case "${OPENWAKEWORD_LOG_TYPE,,}" in
+    both )
+        SHOW_OUTPUT=TRUE
+        touch "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
+        chown -R "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_LOG_PATH}"/"${LOG_FILE}"
+    ;;
+    console )
+        SHOW_OUTPUT=TRUE
+        LOG_PATH=/dev
+        LOG_FILE=/null
+    ;;
+    file )
+        SHOW_OUTPUT=FALSE
+        touch "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
+        chown -R "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
+    ;;
+    none )
+        SHOW_OUTPUT=FALSE
+        LOG_PATH=/dev
+        LOG_FILE=null
+    ;;
+esac
+liftoff
+
+print_start "Starting OpenWakeWord ${OPENWAKEWORD_VERSION}"
+source /opt/openwakeword/bin/activate
+cd /opt/openwakeword/bin
+exec s6-setuidgid ${OPENWAKEWORD_USER}  \
+                                    python \
+                                            -m wyoming_openwakeword \
+                                                ${openwakeword_loglevel} --uri "${openwakeword_listen}" \
+                                                --custom-model-dir "${OPENWAKEWORD_MODEL_PATH}" \
+                                                --preload-model ${OPENWAKEWORD_MODEL} \
+                                                --threshold ${OPENWAKEWORD_THRESHOLD} \
+                                                --trigger-level ${OPENWAKEWORD_TRIGGER_LEVEL} 2>&1 1>> "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}" |  silent sudo -u "${OPENWAKEWORD_USER}" tee -a "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
+
+

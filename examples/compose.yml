@@ -1,0 +1,19 @@
+services:
+  wyoming-app:
+    image: tiredofit/wyoming:latest
+    container_name: wyoming-app
+    volumes:
+      - ./data:/data
+      - ./logs:/logs
+    environment:
+      - TIMEZONE=America/Vancouver
+      - CONTAINER_NAME=wyoming-app
+      - MODE=ALL
+    networks:
+      - services
+    restart: always
+networks:
+  proxy:
+    external: true
+  services:
+    external: true
