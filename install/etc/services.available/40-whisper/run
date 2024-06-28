@@ -1,0 +1,60 @@
+#!/command/with-contenv bash
+
+source /assets/functions/00-container
+PROCESS_NAME="whisper"
+prepare_service defaults all
+
+check_container_initialized
+check_service_initialized init
+
+
+case "${WHISPER_LISTEN_TYPE,,}" in
+    tcp )
+        whisper_listen="tcp://${WHISPER_LISTEN_IP}:${WHISPER_LISTEN_PORT}"
+    ;;
+esac
+
+case "${WHISPER_LOG_LEVEL,,}" in
+    debug )
+        whisper_loglevel="--debug"
+    ;;
+esac
+
+case "${WHISPER_LOG_TYPE,,}" in
+    both )
+        SHOW_OUTPUT=TRUE
+        touch "${WHISPER_LOG_PATH}"/"${WHISPER_LOG_FILE}"
+        chown -R "${WHISPER_USER}" "${WHISPER_LOG_PATH}"/"${LOG_FILE}"
+    ;;
+    console )
+        SHOW_OUTPUT=TRUE
+        LOG_PATH=/dev
+        LOG_FILE=/null
+    ;;
+    file )
+        SHOW_OUTPUT=FALSE
+        touch "${WHISPER_LOG_PATH}"/"${WHISPER_LOG_FILE}"
+        chown -R "${WHISPER_USER}" "${WHISPER_LOG_PATH}"/"${WHISPER_LOG_FILE}"
+    ;;
+    none )
+        SHOW_OUTPUT=FALSE
+        LOG_PATH=/dev
+        LOG_FILE=null
+    ;;
+esac
+
+liftoff
+
+print_start "Starting Whisper ${WHISPER_VERSION}"
+source /opt/whisper/bin/activate
+cd /opt/whisper/bin
+exec sudo -u ${WHISPER_USER}  \
+                                /opt/whisper/bin/python \
+                                        -m wyoming_faster_whisper \
+                                            ${whisper_loglevel} --uri "${whisper_listen}" \
+                                            --data-dir "${WHISPER_DATA_PATH}" \
+                                            --model "${WHISPER_MODEL}" \
+                                            --beam-size "${WHISPER_BEAM_SIZE}" \
+                                            --language "${WHISPER_LANGUAGE,,}" \
+                                            --initial-prompt "${WHISPER_INITIAL_PROMPT}" \
+                                            --device "${WHISPER_DEVICE,,}" 2>&1 1>> "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}" |  silent sudo -u "${OPENWAKEWORD_USER}" tee -a "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"

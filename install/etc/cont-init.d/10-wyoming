@@ -1,0 +1,11 @@
+#!/command/with-contenv bash
+
+source /assets/functions/00-container
+source /assets/defaults/10-wyoming
+prepare_service
+
+PROCESS_NAME="wyoming"
+
+setup_container_mode
+
+liftoff
