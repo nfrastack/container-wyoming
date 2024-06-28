@@ -7,26 +7,26 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ARG OPENWAKEWORD_VERSION
 ARG PIPER_VERSION
 ARG WHISPER_VERSION
+ARG WYOMING_PIPER_VERSION
 
 ENV OPENWAKEWORD_VERSION=${OPENWAKEWORD_VERSION:-"7fa046b56240bb3aa4b0e4cdbd041565e065e585"} \
     PIPER_VERSION=${PIPER_VERSION:-"2023.11.14-2"} \
-    WYOMING_PIPER_VERSION=${WYOMING_PIPER_VERSION:-"v1.5.0"} \
     WHISPER_VERSION=${WHISPER_VERSION:-"v2.1.0"} \
+    WYOMING_PIPER_VERSION=${WYOMING_PIPER_VERSION:-"v1.5.0"} \
     OPENWAKEWORD_REPO_URL=${OPENWAKEWORD_REPO_URL:-"https://github.com/rhasspy/wyoming-openwakeword"} \
     PIPER_REPO_URL=${PIPER_REPO_URL:-"https://github.com/rhasspy/piper"} \
-    WYOMING_PIPER_REPO_URL=${WYOMING_PIPER_REPO_URL:-"https://github.com/rhasspy/wyoming-piper"} \
     WHISPER_REPO_URL=${WHISPER_REPO_URL:-"https://github.com/rhasspy/wyoming-faster-whisper"} \
+    WYOMING_PIPER_REPO_URL=${WYOMING_PIPER_REPO_URL:-"https://github.com/rhasspy/wyoming-piper"} \
     OPENWAKEWORD_USER=${OPENWAKEWORD_USER:-"openwakeword"} \
     OPENWAKEWORD_GROUP=${OPENWAKEWORD_GROUP:-"wyoming"} \
     PIPER_USER=${PIPER_USER:-"piper"} \
     PIPER_GROUP=${PIPER_GROUP:-"wyoming"} \
     WHISPER_USER=${WHISPER_USER:-"whisper"} \
     WHISPER_GROUP=${WHISPER_GROUP:-"wyoming"} \
-    CONTAINER_PROCESS_RUNAWAY_PROTECTOR=FALSE \
     IMAGE_NAME="tiredofit/wyoming" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-wyoming/"
 
-RUN source assets/functions/00-container && \
+    RUN source assets/functions/00-container && \
     set -x && \
     addgroup --gid 9966 wyoming && \
     adduser \
@@ -171,7 +171,11 @@ RUN source assets/functions/00-container && \
                     && \
     package cleanup && \
     \
-    rm -rf /usr/src/*
+    rm -rf \
+            /opt/whisper/.cache \
+            /opt/piper/.cache \
+            /opt/openwakeword/.cache \
+            /usr/src/*
 
 COPY install /
 
