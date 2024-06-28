@@ -113,18 +113,64 @@ Be sure to view the following repositories to understand all the customizable op
 
 #### OpenWakeWord Options
 
-| Variable    | Description                            | Default  | `_FILE` |
-| ----------- | -------------------------------------- | -------- | ------- |
+| Variable                     | Description | Default                             | `_FILE` |
+| ---------------------------- | ----------- | ----------------------------------- | ------- |
+| `OPENWAKEWORD_DATA_PATH`     |             | `${DATA_PATH}/openwakeword/`        |         |
+| `OPENWAKEWORD_LISTEN_IP`     |             | `0.0.0.0`                           |         |
+| `OPENWAKEWORD_LISTEN_PORT`   |             | `10400`                             |         |
+| `OPENWAKEWORD_LISTEN_TYPE`   |             | `TCP`                               |         |
+| `OPENWAKEWORD_LOG_FILE`      |             | `openwakeword.log`                  |         |
+| `OPENWAKEWORD_LOG_FORMAT`    |             | `YYYY-MM-DDTHH:mm:ss`               |         |
+| `OPENWAKEWORD_LOG_LEVEL`     |             | `info`                              |         |
+| `OPENWAKEWORD_LOG_PATH`      |             | `${LOG_PATH}/openwakeword/`         |         |
+| `OPENWAKEWORD_LOG_TYPE`      |             | `both`                              |         |
+| `OPENWAKEWORD_MODEL`         |             | `hey_jarvis`                        |         |
+| `OPENWAKEWORD_MODEL_PATH`    |             | `${OPENWAKEWORD_DATA_PATH}/models/` |         |
+| `OPENWAKEWORD_OUTPUT_PATH`   |             | `${OPENWAKEWORD_DATA_PATH}/output/` |         |
+| `OPENWAKEWORD_THRESHOLD`     |             | `0.5`                               |         |
+| `OPENWAKEWORD_TRIGGER_LEVEL` |             | `1`                                 |         |
 
 #### Piper Options
 
-| Variable    | Description                            | Default  | `_FILE` |
-| ----------- | -------------------------------------- | -------- | ------- |
+| Variable              | Description | Default               | `_FILE` |
+| --------------------- | ----------- | --------------------- | ------- |
+| `PIPER_DATA_PATH`     |             | `${DATA_PATH}/piper/` |         |
+| `PIPER_LISTEN_IP`     |             | `0.0.0.0`             |         |
+| `PIPER_LISTEN_PORT`   |             | `10200`               |         |
+| `PIPER_LISTEN_TYPE`   |             | `TCP`                 |         |
+| `PIPER_LOG_FILE`      |             | `piper.log`           |         |
+| `PIPER_LOG_FORMAT`    |             | `YYYY-MM-DDTHH:mm:ss` |         |
+| `PIPER_LOG_LEVEL`     |             | `INFO`                |         |
+| `PIPER_LOG_PATH`      |             | `${LOG_PATH}/piper/`  |         |
+| `PIPER_LOG_TYPE`      |             | `both`                |         |
+| `PIPER_VOICE`         |             | `en_US-lessac-medium` |         |
+| `PIPER_SPEAKER`       |             | `0`                   |         |
+| `PIPER_LENGTH_SCALE`  |             | `1.0`                 |         |
+| `PIPER_NOISE_SCALE`   |             | `0.667`               |         |
+| `PIPER_NOISE_WEIGHT`  |             | `0.333`               |         |
+| `PIPER_PROCESS_LIMIT` |             | `1`                   |         |
+| `PIPER_UPDATE_VOICES` |             | `TRUE`                |         |
 
 #### Whisper Options
 
-| Variable    | Description                            | Default  | `_FILE` |
-| ----------- | -------------------------------------- | -------- | ------- |
+| Variable                 | Description | Default                                                            | `_FILE` |
+| ------------------------ | ----------- | ------------------------------------------------------------------ | ------- |
+| `WHISPER_DATA_PATH`      |             | `${DATA_PATH}/whisper/`                                            |         |
+| `WHISPER_LISTEN_IP`      |             | `0.0.0.0`                                                          |         |
+| `WHISPER_LISTEN_PORT`    |             | `10300`                                                            |         |
+| `WHISPER_LISTEN_TYPE`    |             | `TCP`                                                              |         |
+| `WHISPER_LOG_FILE`       |             | `whisper.log`                                                      |         |
+| `WHISPER_LOG_FORMAT`     |             | `YYYY-MM-DDTHH:mm:ss`                                              |         |
+| `WHISPER_LOG_LEVEL`      |             | `INFO`                                                             |         |
+| `WHISPER_LOG_PATH`       |             | `${LOG_PATH}/whisper/`                                             |         |
+| `WHISPER_LOG_TYPE`       |             | `both`                                                             |         |
+| `WHISPER_LANGUAGE`       |             | `en`                                                               |         |
+| `WHISPER_INITIAL_PROMPT` |             | ` `                                                                |         |
+| `WHISPER_DOWNLOAD_PATH`  |             | `${WHISPER_DATA_PATH}/download/`                                   |         |
+| `WHISPER_BEAM_SIZE`      |             | `1`                                                                |         |
+| `WHISPER_MODEL`          |             | `tiny-int8`                                                        |         |
+| `WHISPER_DEVICE`         |             | `CPU`                                                              |         |
+
 
 ### Networking
 

@@ -1,3 +1,9 @@
+## 1.0.2 2024-06-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - Updates to Whisper Initial Prompt
+
+
 ## 1.0.1 2024-06-27 <dave at tiredofit dot ca>
 
    ### Changed

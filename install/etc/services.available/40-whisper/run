@@ -43,6 +43,7 @@ case "${WHISPER_LOG_TYPE,,}" in
     ;;
 esac
 
+if [ -n "${WHISPER_INITIAL_PROMPT}" ]; then whisper_initial_prompt="${WHISPER_INITIAL_PROMPT}" ; fi
 liftoff
 
 print_start "Starting Whisper ${WHISPER_VERSION}"
@@ -56,5 +57,4 @@ exec sudo -u ${WHISPER_USER}  \
                                             --model "${WHISPER_MODEL}" \
                                             --beam-size "${WHISPER_BEAM_SIZE}" \
                                             --language "${WHISPER_LANGUAGE,,}" \
-                                            --initial-prompt "${WHISPER_INITIAL_PROMPT}" \
-                                            --device "${WHISPER_DEVICE,,}" 2>&1 1>> "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}" |  silent sudo -u "${OPENWAKEWORD_USER}" tee -a "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
+                                            ${whisper_initial_prompt} --device "${WHISPER_DEVICE,,}" 2>&1 1>> "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}" |  silent sudo -u "${OPENWAKEWORD_USER}" tee -a "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
