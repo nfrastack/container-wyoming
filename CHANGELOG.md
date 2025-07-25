@@ -1,3 +1,15 @@
+## 1.1.0 2025-07-25 <dave at tiredofit dot ca>
+
+   ### Added
+      - Rework build to support UV instead of pip
+      - OpenWakeWord d8e9780ef68459f81a45486d0ea7a3201ba16990
+      - Whisper v2.5.0
+      - Wyoming Piper 1.6.1
+
+   ### Changed
+      - Fix issue with ballooning logs
+
+
 ## 1.0.2 2024-06-27 <dave at tiredofit dot ca>
 
    ### Added
