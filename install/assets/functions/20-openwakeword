@@ -21,7 +21,7 @@ openwakeword_bootstrap_filesystem() {
     fi
     if [ $(stat -c %U "${OPENWAKEWORD_LOG_PATH}") != "${OPENWAKEWORD_USER}" ] ; then chown -R "${OPENWAKEWORD_USER}":"${OPENWAKEWORD_GROUP}" "${OPENWAKEWORD_LOG_PATH}" ; fi
 
-    case "${LOG_TYPE,,}" in
+    case "${OPENWAKEWORD_LOG_TYPE,,}" in
         file | both)
             create_logrotate openwakeword "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}" openwakeword "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_GROUP}"
         ;;

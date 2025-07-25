@@ -11,7 +11,7 @@ piper_bootstrap_filesystem() {
     fi
     if [ $(stat -c %U "${PIPER_LOG_PATH}") != "${PIPER_USER}" ] ; then chown -R "${PIPER_USER}":"${PIPER_GROUP}" "${PIPER_LOG_PATH}" ; fi
 
-    case "${LOG_TYPE,,}" in
+    case "${PIPER_LOG_TYPE,,}" in
         file | both)
             create_logrotate piper "${PIPER_LOG_PATH}"/"${PIPER_LOG_FILE}" piper "${PIPER_USER}" "${PIPER_GROUP}"
         ;;
