@@ -1,5 +1,0 @@
-#!/command/with-contenv bash
-
-DATA_PATH=${DATA_PATH:-"/data/"}
-LOG_PATH=${LOG_PATH:-"/logs/"}
-MODE=${MODE:-"ALL"}

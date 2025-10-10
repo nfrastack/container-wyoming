@@ -1,7 +1,10 @@
 #!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
 
-source /assets/functions/00-container
-PROCESS_NAME="openwakeword"
+source /container/base/functions/container/init
+SERVICE_NAME="openwakeword"
 prepare_service defaults all
 
 check_container_initialized
@@ -25,8 +28,8 @@ esac
 case "${OPENWAKEWORD_LOG_TYPE,,}" in
     both )
         SHOW_OUTPUT=TRUE
-        touch "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
-        chown -R "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_LOG_PATH}"/"${LOG_FILE}"
+        touch "${OPENWAKEWORD_LOG_PATH%/}"/"${OPENWAKEWORD_LOG_FILE}"
+        chown -R "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_LOG_PATH%/}"/"${LOG_FILE}"
     ;;
     console )
         SHOW_OUTPUT=TRUE
@@ -35,8 +38,8 @@ case "${OPENWAKEWORD_LOG_TYPE,,}" in
     ;;
     file )
         SHOW_OUTPUT=FALSE
-        touch "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
-        chown -R "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
+        touch "${OPENWAKEWORD_LOG_PATH%/}"/"${OPENWAKEWORD_LOG_FILE}"
+        chown -R "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_LOG_PATH%/}"/"${OPENWAKEWORD_LOG_FILE}"
     ;;
     none )
         SHOW_OUTPUT=FALSE
@@ -46,9 +49,9 @@ case "${OPENWAKEWORD_LOG_TYPE,,}" in
 esac
 liftoff
 
-print_start "Starting OpenWakeWord ${OPENWAKEWORD_VERSION}"
-source /opt/openwakeword/bin/activate
-cd /opt/openwakeword/bin
+print_start "Starting OpenWakeWord $(grep -o "ADD: OpenWakeWord .* |" /container/build/${IMAGE_NAME/\//_}/build.log | awk '{print $3}')"
+source /opt/"${OPENWAKEWORD_USER}"/bin/activate
+cd /opt/"${OPENWAKEWORD_USER}"/bin
 exec s6-setuidgid ${OPENWAKEWORD_USER}  \
                                     python \
                                             -m wyoming_openwakeword \
@@ -56,6 +59,6 @@ exec s6-setuidgid ${OPENWAKEWORD_USER}  \
                                                 --custom-model-dir "${OPENWAKEWORD_MODEL_PATH}" \
                                                 --preload-model ${OPENWAKEWORD_MODEL} \
                                                 --threshold ${OPENWAKEWORD_THRESHOLD} \
-                                                --trigger-level ${OPENWAKEWORD_TRIGGER_LEVEL} 2>&1 1>> "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}" |  silent sudo -u "${OPENWAKEWORD_USER}" tee -a "${OPENWAKEWORD_LOG_PATH}"/"${OPENWAKEWORD_LOG_FILE}"
+                                                --trigger-level ${OPENWAKEWORD_TRIGGER_LEVEL} 2>&1 1>> "${OPENWAKEWORD_LOG_PATH%/}"/"${OPENWAKEWORD_LOG_FILE}" |  silent sudo -u "${OPENWAKEWORD_USER}" tee -a "${OPENWAKEWORD_LOG_PATH%/}"/"${OPENWAKEWORD_LOG_FILE}"
 
 

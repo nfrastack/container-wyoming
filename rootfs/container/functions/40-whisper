@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+whisper_bootstrap_filesystem() {
+    create_folder \
+                    "${WHISPER_DATA_PATH},\
+                    ${WHISPER_LOG_PATH}" \
+                    "${WHISPER_USER}":"${WHISPER_GROUP}" 750
+
+    case "${WHISPER_LOG_TYPE,,}" in
+        file | both)
+            create_logrotate whisper "${WHISPER_LOG_PATH%/}"/"${WHISPER_LOG_FILE}" whisper "${WHISPER_USER}" "${WHISPER_GROUP}"
+        ;;
+    esac
+}

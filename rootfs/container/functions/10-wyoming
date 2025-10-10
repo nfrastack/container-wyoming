@@ -1,29 +1,26 @@
-#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
 
-bootstrap_filesystem() {
-    if [ ! -d "${DATA_PATH}" ]; then
-        mkdir -p "${DATA_PATH}"
-    fi
-    if [ $(stat -c %G "${DATA_PATH}") != "wyoming" ] ; then chown root:wyoming "${DATA_PATH}" ; fi
-
-    if [ ! -d "${LOG_PATH}" ]; then
-        mkdir -p "${LOG_PATH}"
-    fi
-    if [ $(stat -c %G "${LOG_PATH}") != "wyoming}" ] ; then chown -R root:wyoming "${LOG_PATH}" ; fi
+wyoming_bootstrap_filesystem() {
+    create_folder \
+                    "${DATA_PATH},\
+                    ${LOG_PATH}" \
+                    root:wyoming 755
 }
 
-setup_container_mode() {
-    if [ -f "/tmp/.container/wyoming/.mode-env" ]; then
+wyoming_setup_container_mode() {
+    if [ -f "/container/state/wyoming/mode" ]; then
         print_debug "[setup_container_mode] Importing MODE environment generated variables"
-        source /tmp/.container/wyoming/.mode-env
+        source /container/state/wyoming/mode
     else
-        mkdir -p /tmp/.container/wyoming/
+        mkdir -p /container/state/wyoming
         if [ "${MODE,,}" = "aio" ] || [ "${MODE,,}" = "all" ] ; then
             print_debug "[setup_container_mode] Container Mode: ALL"
             print_debug "[setup_container_mode] Creating MODE environment generated variables"
-            echo "ENABLE_OPENWAKEWORD=TRUE" >> /tmp/.container/wyoming/.mode-env
-            echo "ENABLE_PIPER=TRUE" >> /tmp/.container/wyoming/.mode-env
-            echo "ENABLE_WHISPER=TRUE" >> /tmp/.container/wyoming/.mode-env
+            echo "ENABLE_OPENWAKEWORD=TRUE" | silent tee -a /container/state/wyoming/mode
+            echo "ENABLE_PIPER=TRUE" | silent tee -a /container/state/wyoming/mode
+            echo "ENABLE_WHISPER=TRUE" | silent tee -a /container/state/wyoming/mode
         else
             modes=$(echo "${MODE,,}" | tr "," "\n")
             for mode in $modes
@@ -32,21 +29,21 @@ setup_container_mode() {
                     "openwakeword" )
                         print_debug "[setup_container_mode] Enabling Container Mode for: OPENWAKEWORD"
                         service_start 20-openwakeword
-                        echo "ENABLE_OPENWAKEWORD=TRUE" >> /tmp/.container/wyoming/.mode-env
+                        echo "ENABLE_OPENWAKEWORD=TRUE" | silent tee -a /container/state/wyoming/mode
                     ;;
                     "piper" )
                         service_start 30-piper
                         print_debug "[setup_container_mode] Enabling Container Mode for: PIPER"
-                        echo "ENABLE_PIPER=TRUE" >> /tmp/.container/wyoming/.mode-env
+                        echo "ENABLE_PIPER=TRUE" | silent tee -a /container/state/wyoming/mode
                     ;;
                     "whisper" )
                         service_start 40-whisper
                         print_debug "[setup_container_mode] Enabling Container Mode for: WHISPER"
-                        echo "ENABLE_WHISPER=TRUE" >> /tmp/.container/wyoming/.mode-env
+                        echo "ENABLE_WHISPER=TRUE" | silent tee -a /container/state/wyoming/mode
                     ;;
                    "none" )
                         print_debug "[setup_container_mode] Do Nothing"
-                        echo "ENABLE_NOTHING=TRUE" >> /tmp/.container/wyoming/.mode-env
+                        echo "ENABLE_NOTHING=TRUE" | silent tee -a /container/state/wyoming/mode
                     ;;
                     *)
                         print_error "[setup_container_mode] Unknown 'MODE' environment variable - exitting.."
@@ -55,6 +52,6 @@ setup_container_mode() {
                 esac
             done
         fi
-        source /tmp/.container/wyoming/.mode-env
+        source /container/state/wyoming/mode
     fi
 }

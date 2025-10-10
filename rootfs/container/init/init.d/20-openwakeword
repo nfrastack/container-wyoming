@@ -1,0 +1,24 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+source /container/defaults/10-wyoming
+source /container/functions/10-wyoming
+source /container/state/wyoming/mode
+SERVICE_NAME="openwakeword"
+
+if check_container_restarted ; then
+    if var_true "${ENABLE_OPENWAKEWORD}" ; then
+        print_debug "Configuring OpenWakeWord"
+        source /container/defaults/20-openwakeword
+        source /container/functions/20-openwakeword
+        openwakeword_bootstrap_filesystem
+        print_debug "Finished Configuring OpenWakeWord"
+    else
+        service_stop 20-openwakeword
+    fi
+fi
+
+liftoff

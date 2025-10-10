@@ -1,0 +1,24 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /container/base/functions/container/init
+source /container/defaults/10-wyoming
+source /container/functions/10-wyoming
+source /container/state/wyoming/mode
+SERVICE_NAME="whisper"
+
+if check_container_restarted ; then
+    if var_true "${ENABLE_WHISPER}" ; then
+        print_debug "Configuring Whisper"
+        source /container/defaults/40-whisper
+        source /container/functions/40-whisper
+        whisper_bootstrap_filesystem
+        print_debug "Finished Configuring Whisper"
+    else
+        service_stop 40-whisper
+    fi
+fi
+
+liftoff

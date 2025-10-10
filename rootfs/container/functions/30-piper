@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+piper_bootstrap_filesystem() {
+    create_folder \
+                    "${PIPER_DATA_PATH},\
+                    ${PIPER_LOG_PATH}" \
+                    "${PIPER_USER}":"${PIPER_GROUP}" 750
+
+    case "${PIPER_LOG_TYPE,,}" in
+        file | both)
+            create_logrotate piper "${PIPER_LOG_PATH%/}"/"${PIPER_LOG_FILE}" piper "${PIPER_USER}" "${PIPER_GROUP}"
+        ;;
+    esac
+}

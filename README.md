@@ -1,19 +1,12 @@
-# github.com/tiredofit/docker-wyoming
-
-[![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-wyoming?style=flat-square)](https://github.com/tiredofit/docker-wyoming/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/tiredofit/docker-wyoming/build?style=flat-square)](https://github.com/tiredofit/docker-wyoming/actions?query=workflow%3Abuild)
-[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/wyoming.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/wyoming/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/wyoming.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/wyoming/)
-[![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)
-[![Paypal Donate](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square)](https://www.paypal.me/tiredofit)
+# nfrastack/container-wyoming
 
 ## About
 
-This will build a Docker Image for [Wyoming](https:///), A series of utilities to support voice processing, either speech to text (STT) or text to speech (TTS).
+This will build a Docker Image for [Wyoming](https:///), A series of utilities to support voice processing, either speech to text (STT) or text to speech (TTS)
 
 ## Maintainer
 
-- [Dave Conroy](https://github.com/tiredofit/)
+- [Nfrastack](https://www.nfrastack.com)
 
 ## Table of Contents
 
@@ -21,64 +14,61 @@ This will build a Docker Image for [Wyoming](https:///), A series of utilities t
 - [Maintainer](#maintainer)
 - [Table of Contents](#table-of-contents)
 - [Installation](#installation)
-  - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
-    - [Multi Architecture](#multi-architecture)
-- [Configuration](#configuration)
   - [Quick Start](#quick-start)
   - [Persistent Storage](#persistent-storage)
-  - [Environment Variables](#environment-variables)
-    - [Base Images used](#base-images-used)
-    - [Container Options](#container-options)
-    - [OpenWakeWord Options](#openwakeword-options)
-    - [Piper Options](#piper-options)
-    - [Whisper Options](#whisper-options)
+- [Environment Variables](#environment-variables)
+  - [Base Images used](#base-images-used)
+  - [Core Configuration](#core-configuration)
+- [Users and Groups](#users-and-groups)
   - [Networking](#networking)
 - [Maintenance](#maintenance)
   - [Shell Access](#shell-access)
-- [Support](#support)
-  - [Usage](#usage)
-  - [Bugfixes](#bugfixes)
-  - [Feature Requests](#feature-requests)
-  - [Updates](#updates)
+- [Support & Maintenance](#support--maintenance)
 - [License](#license)
-- [References](#references)
-
 
 ## Installation
-### Build from Source
-Clone this repository and build the image with `docker build -t (imagename) .`
 
 ### Prebuilt Images
-Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/wyoming).
+Feature limited builds of the image are available on the [Github Container Registry](https://github.com/nfrastack/container-wyoming/pkgs/container/container-wyoming) and [Docker Hub](https://hub.docker.com/r/nfrastack/wyoming).
+
+To unlock advanced features, one must provide a code to be able to change specific environment variables from defaults. Support the development to gain access to a code.
+
+To get access to the image use your container orchestrator to pull from the following locations:
 
 ```
-docker pull tiredofit/wyoming:(imagetag)
+ghcr.io/nfrastack/container-wyoming:(image_tag)
+docker.io/nfrastack/wyoming:(image_tag)
 ```
 
-Builds of the image are also available on the [Github Container Registry](https://github.com/tiredofit/wyoming/pkgs/container/wyoming)
+Image tag syntax is:
 
-```
-docker pull ghcr.io/tiredofit/docker-wyoming:(imagetag)
-```
+`<image>:<optional tag>
 
-The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
+Example:
 
-| Container OS | Tag       |
-| ------------ | --------- |
-| Debian       | `:latest` |
+`ghcr.io/nfrastack/container-wyoming:latest` or
 
-#### Multi Architecture
-Images are built primarily for `amd64` architecture, and may also include builds for `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
+`ghcr.io/nfrastack/container-wyoming:1.0`
 
-## Configuration
+
+* `latest` will be the most recent commit
+* An optional `tag` may exist that matches the [CHANGELOG](CHANGELOG.md) - These are the safest
+* If it is built for multiple distributions there may exist a value of `alpine` or `debian`
+* If there are multiple distribution variations it may include a version - see the registry for availability
+
+Have a look at the container registries and see what tags are available.
+
+#### Multi-Architecture Support
+
+Images are built for `amd64` by default, with optional support for `arm64` and other architectures.
 
 ### Quick Start
 
-* The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/). See the examples folder for a working [compose.yml](examples/compose.yml) that can be modified for development or production use.
+* The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/). See the examples folder for a working [compose.yml](examples/compose.yml) that can be modified for your use.
 
+* Map [persistent storage](#persistent-storage) for access to configuration and data files for backup.
 * Set various [environment variables](#environment-variables) to understand the capabilities of this image.
-* Map [persistent storage](#data-volumes) for access to configuration and data files for backup.
 
 ### Persistent Storage
 
@@ -89,27 +79,29 @@ The following directories are used for configuration and can be mapped for persi
 | `/data`   | Data        |
 | `/logs`   | Logs        |
 
-
-* * *
 ### Environment Variables
 
 #### Base Images used
 
-This image relies on an [Debian Linux](https://hub.docker.com/r/tiredofit/debian) base image that relies on an [init system](https://github.com/just-containers/s6-overlay) for added capabilities. Outgoing SMTP capabilities are handlded via `msmtp`. Individual container performance monitoring is performed by [zabbix-agent](https://zabbix.org). Additional tools include: `bash`,`curl`,`less`,`logrotate`,`nano`.
-
+This image relies on a customized base image in order to work.
 Be sure to view the following repositories to understand all the customizable options:
 
-| Image                                                  | Description                            |
-| ------------------------------------------------------ | -------------------------------------- |
-| [OS Base](https://github.com/tiredofit/docker-debian/) | Customized Image based on Debian Linux |
+| Image                                                   | Description |
+| ------------------------------------------------------- | ----------- |
+| [OS Base](https://github.com/nfrastack/container-base/) | Base Image  |
 
+Below is the complete list of available options that can be used to customize your installation.
 
-#### Container Options
-| Variable    | Description                            | Default  | `_FILE` |
-| ----------- | -------------------------------------- | -------- | ------- |
-| `MODE`      | `OPENWAKEWORD` `PIPER` `WHISPER` `ALL` | `ALL`    |         |
-| `DATA_PATH` | Data Path                              | `/data`  |         |
-| `LOG_PATH`  | Log Path                               | `/logs/` |         |
+- Variables showing an 'x' under the `Advanced` column can only be set if the containers advanced functionality is enabled.
+
+#### Core Configuration
+
+| Parameter   | Description                            | Default  | Advanced |
+| ----------- | -------------------------------------- | -------- | -------- |
+| `MODE`      | `OPENWAKEWORD` `PIPER` `WHISPER` `ALL` | `ALL`    |          |
+| `DATA_PATH` | Data Path                              | `/data`  |          |
+| `LOG_PATH`  | Log Path                               | `/logs/` |          |
+
 
 #### OpenWakeWord Options
 
@@ -153,23 +145,23 @@ Be sure to view the following repositories to understand all the customizable op
 
 #### Whisper Options
 
-| Variable                 | Description | Default                                                            | `_FILE` |
-| ------------------------ | ----------- | ------------------------------------------------------------------ | ------- |
-| `WHISPER_DATA_PATH`      |             | `${DATA_PATH}/whisper/`                                            |         |
-| `WHISPER_LISTEN_IP`      |             | `0.0.0.0`                                                          |         |
-| `WHISPER_LISTEN_PORT`    |             | `10300`                                                            |         |
-| `WHISPER_LISTEN_TYPE`    |             | `TCP`                                                              |         |
-| `WHISPER_LOG_FILE`       |             | `whisper.log`                                                      |         |
-| `WHISPER_LOG_FORMAT`     |             | `YYYY-MM-DDTHH:mm:ss`                                              |         |
-| `WHISPER_LOG_LEVEL`      |             | `INFO`                                                             |         |
-| `WHISPER_LOG_PATH`       |             | `${LOG_PATH}/whisper/`                                             |         |
-| `WHISPER_LOG_TYPE`       |             | `both`                                                             |         |
-| `WHISPER_LANGUAGE`       |             | `en`                                                               |         |
-| `WHISPER_INITIAL_PROMPT` |             | ` `                                                                |         |
-| `WHISPER_DOWNLOAD_PATH`  |             | `${WHISPER_DATA_PATH}/download/`                                   |         |
-| `WHISPER_BEAM_SIZE`      |             | `1`                                                                |         |
-| `WHISPER_MODEL`          |             | `tiny-int8`                                                        |         |
-| `WHISPER_DEVICE`         |             | `CPU`                                                              |         |
+| Variable                 | Description | Default                          | `_FILE` |
+| ------------------------ | ----------- | -------------------------------- | ------- |
+| `WHISPER_DATA_PATH`      |             | `${DATA_PATH}/whisper/`          |         |
+| `WHISPER_LISTEN_IP`      |             | `0.0.0.0`                        |         |
+| `WHISPER_LISTEN_PORT`    |             | `10300`                          |         |
+| `WHISPER_LISTEN_TYPE`    |             | `TCP`                            |         |
+| `WHISPER_LOG_FILE`       |             | `whisper.log`                    |         |
+| `WHISPER_LOG_FORMAT`     |             | `YYYY-MM-DDTHH:mm:ss`            |         |
+| `WHISPER_LOG_LEVEL`      |             | `INFO`                           |         |
+| `WHISPER_LOG_PATH`       |             | `${LOG_PATH}/whisper/`           |         |
+| `WHISPER_LOG_TYPE`       |             | `both`                           |         |
+| `WHISPER_LANGUAGE`       |             | `en`                             |         |
+| `WHISPER_INITIAL_PROMPT` |             | ` `                              |         |
+| `WHISPER_DOWNLOAD_PATH`  |             | `${WHISPER_DATA_PATH}/download/` |         |
+| `WHISPER_BEAM_SIZE`      |             | `1`                              |         |
+| `WHISPER_MODEL`          |             | `tiny-int8`                      |         |
+| `WHISPER_DEVICE`         |             | `CPU`                            |         |
 
 
 ### Networking
@@ -180,34 +172,33 @@ Be sure to view the following repositories to understand all the customizable op
 | `10300` | `tcp`    | Whisper      |
 | `10400` | `tcp`    | OpenWakeWord |
 
+
+## Users and Groups
+
+| Type  | Name           | ID   |
+| ----- | -------------- | ---- |
+| User  | `openwakeword` | 9673 |
+| User  | `piper`        | 7477 |
+| User  | `whisper`      | 9777 |
+| Group | `wyoming`      | 9966 |
+
+
+* * *
+
 ## Maintenance
+
 ### Shell Access
 
-For debugging and maintenance purposes you may want access the containers shell.
+For debugging and maintenance, `bash` and `sh` are available in the container.
 
-```bash
-docker exec -it (whatever your container name is) bash
-```
-## Support
+## Support & Maintenance
 
-These images were built to serve a specific need in a production environment and gradually have had more functionality added based on requests from the community.
-### Usage
-- The [Discussions board](../../discussions) is a great place for working with the community on tips and tricks of using this image.
-- Consider [sponsoring me](https://github.com/sponsors/tiredofit) for personalized support.
-### Bugfixes
-- Please, submit a [Bug Report](issues/new) if something isn't working as expected. I'll do my best to issue a fix in short order.
-
-### Feature Requests
-- Feel free to submit a feature request, however there is no guarantee that it will be added, or at what timeline.
-- Consider [sponsoring me](https://github.com/sponsors/tiredofit) regarding development of features.
-
-### Updates
-- Best effort to track upstream changes, More priority if I am actively using the image in a production environment.
-- Consider [sponsoring me](https://github.com/sponsors/tiredofit) for up to date releases.
+- For community help, tips, and community discussions, visit the [Discussions board](/discussions).
+- For personalized support or a support agreement, see [Nfrastack Support](https://nfrastack.com/).
+- To report bugs, submit a [Bug Report](issues/new). Usage questions will be closed as not-a-bug.
+- Feature requests are welcome, but not guaranteed. For prioritized development, consider a support agreement.
+- Updates are best-effort, with priority given to active production use and support agreements.
 
 ## License
-MIT. See [LICENSE](LICENSE) for more details.
 
-## References
-
-* <[https://](https:///)>
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

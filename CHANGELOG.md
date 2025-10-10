@@ -1,3 +1,9 @@
+## 1.2.0pre 2025-10-09 <code at nfrastack dot com>
+
+   ### Changed
+      - Switch base image to nfrastack/base
+      - Wyoming Piper 1.6.3
+      - Piper now using different OHF-Voice source and 1.3.0
 ## 1.1.99 2025-10-09 <dave at tiredofit dot ca>
 
 Add EOL notice and deprecate image

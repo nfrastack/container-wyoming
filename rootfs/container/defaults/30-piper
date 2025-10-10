@@ -1,6 +1,9 @@
-#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
 
 PIPER_DATA_PATH=${PIPER_DATA_PATH:-"${DATA_PATH}/piper/"}
+#
 PIPER_LISTEN_IP=${PIPER_LISTEN_IP:-"0.0.0.0"}
 PIPER_LISTEN_PORT=${PIPER_LISTEN_PORT:-"10200"}
 PIPER_LISTEN_TYPE=${PIPER_LISTEN_TYPE:-"TCP"}

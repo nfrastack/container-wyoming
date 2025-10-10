@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+openwakeword_bootstrap_filesystem() {
+    create_folder \
+                    "${OPENWAKEWORD_DATA_PATH},\
+                    ${OPENWAKEWORD_MODEL_PATH},\
+                    ${OPENWAKEWORD_LOG_PATH},\
+                    ${OPENWAKEWORD_OUTPUT_PATH}" \
+                    "${OPENWAKEWORD_USER}":"${OPENWAKEWORD_GROUP}" 750
+
+    case "${OPENWAKEWORD_LOG_TYPE,,}" in
+        file | both)
+            create_logrotate openwakeword "${OPENWAKEWORD_LOG_PATH%/}"/"${OPENWAKEWORD_LOG_FILE}" openwakeword "${OPENWAKEWORD_USER}" "${OPENWAKEWORD_GROUP}"
+        ;;
+    esac
+}
