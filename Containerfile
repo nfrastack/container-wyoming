@@ -88,7 +88,7 @@ RUN echo "" && \
     create_user ${WHISPER_USER} 9777 wyoming 9966 /opt/${WHISPER_USER} && \
     case $(container_info variant ) in \
         bookworm ) \
-            package repo add backports
+            package repo add backports ; \
             backport="/$(container_info variant)-backports" ; \
         ;; \
     esac && \
