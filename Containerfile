@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+# SPDX-FileCopyrightText: © 2026 Nfrastack <code@nfrastack.com>
 #
 # SPDX-License-Identifier: MIT
 
@@ -120,18 +120,11 @@ RUN echo "" && \
     uv pip install \
                     setuptools \
                     wheel \
+                    . \
                     && \
-    uv pip install \
-                    -r requirements.txt \
-                    && \
-    /opt/${OPENWAKEWORD_USER}/bin/python \
-                                            ./setup.py \
-                                                install \
-                                            && \
-    \
     chown -R "${OPENWAKEWORD_USER}":"${OPENWAKEWORD_GROUP}" /opt/${OPENWAKEWORD_USER} && \
     clone_git_repo https://github.com/fwartner/home-assistant-wakewords-collection && \
-    find /usr/src/home_assistant_wakewords_collection/ -type f -name *.tflite -print0 | xargs -0 cp -t /opt/${OPENWAKEWORD_USER}/lib/python"$(python3 --version | awk '{print $2}' | cut -d . -f 1-2)"/site-packages/wyoming_openwakeword/models/ && \
+    find /usr/src/home_assistant_wakewords_collection/en -type f -name '*.tflite' -print0 | xargs -0 cp -t /opt/${OPENWAKEWORD_USER}/lib/python"$(python3 --version | awk '{print $2}' | cut -d . -f 1-2)"/site-packages/pyopen_wakeword/models/ && \
     deactivate && \
     container_build_log add "OpenWakeWord" "${OPENWAKEWORD_VERSION}" "${OPENWAKEWORD_REPO_URL}" && \
     \
