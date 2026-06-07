@@ -21,17 +21,17 @@ ARG \
     OPENWAKEWORD_GROUP \
     OPENWAKEWORD_REPO_URL="https://github.com/rhasspy/wyoming-openwakeword" \
     OPENWAKEWORD_USER \
-    OPENWAKEWORD_VERSION="d8e9780ef68459f81a45486d0ea7a3201ba16990" \
+    OPENWAKEWORD_VERSION="v2.1.0" \
     PIPER_GROUP \
     PIPER_USER \
     PIPER_REPO_URL="https://github.com/OHF-Voice/piper1-gpl" \
-    PIPER_VERSION="v1.3.0" \
+    PIPER_VERSION="v1.4.2" \
     WHISPER_GROUP \
     WHISPER_REPO_URL="https://github.com/rhasspy/wyoming-faster-whisper" \
     WHISPER_USER \
-    WHISPER_VERSION="v2.5.0" \
+    WHISPER_VERSION="v3.1.0" \
     WYOMING_PIPER_REPO_URL="https://github.com/rhasspy/wyoming-piper" \
-    WYOMING_PIPER_VERSION="v1.6.3"
+    WYOMING_PIPER_VERSION="v2.2.2"
 
 COPY CHANGELOG.md /usr/src/container/CHANGELOG.md
 COPY LICENSE /usr/src/container/LICENSE

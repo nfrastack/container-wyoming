@@ -54,12 +54,10 @@ cd /opt/"${PIPER_USER}"/bin
 exec s6-setuidgid "${PIPER_USER}"  \
                                     python \
                                             -m wyoming_piper \
-                                    --piper /opt/"${PIPER_USER}"/piper \
                                     ${piper_loglevel} --uri "${piper_listen}" \
                                     --length-scale "${PIPER_LENGTH_SCALE}" \
                                     --noise-scale "${PIPER_NOISE_SCALE}" \
                                     --noise-w "${PIPER_NOISE_WEIGHT}" \
                                     --speaker "${PIPER_SPEAKER}" \
                                     --voice "${PIPER_VOICE}" \
-                                    --max-piper-procs "${PIPER_PROCESS_LIMIT}" \
                                     --data-dir "${PIPER_DATA_PATH}" ${piper_update_voices} 2>&1 1>> "${PIPER_LOG_PATH%/}"/"${PIPER_LOG_FILE}" |  silent sudo -u "${PIPER_USER}" tee -a "${PIPER_LOG_PATH%/}"/"${PIPER_LOG_FILE}"
