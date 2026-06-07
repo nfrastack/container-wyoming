@@ -10,7 +10,6 @@ prepare_service defaults
 check_container_initialized
 check_service_initialized init
 
-
 case "${WHISPER_LISTEN_TYPE,,}" in
     tcp )
         whisper_listen="tcp://${WHISPER_LISTEN_IP}:${WHISPER_LISTEN_PORT}"

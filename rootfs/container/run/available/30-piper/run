@@ -54,7 +54,7 @@ cd /opt/"${PIPER_USER}"/bin
 exec s6-setuidgid "${PIPER_USER}"  \
                                     python \
                                             -m wyoming_piper \
-                                    --piper /opt/$"{PIPER_USER}"/piper \
+                                    --piper /opt/"${PIPER_USER}"/piper \
                                     ${piper_loglevel} --uri "${piper_listen}" \
                                     --length-scale "${PIPER_LENGTH_SCALE}" \
                                     --noise-scale "${PIPER_NOISE_SCALE}" \
