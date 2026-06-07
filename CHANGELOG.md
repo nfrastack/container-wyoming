@@ -1,9 +1,12 @@
-## 1.2.0pre 2025-10-09 <code at nfrastack dot com>
+## 1.2.0 2026-06-06 <code at nfrastack dot com>
 
-   ### Changed
-      - Switch base image to nfrastack/base
-      - Wyoming Piper 1.6.3
-      - Piper now using different OHF-Voice source and 1.3.0
+   ### Added
+      - Switch image to nfrastack/base
+      - Wyoming Piper 2.2.2
+      - Wyoming Faster Whisper 3.1.0
+      - Piper 1.4.2
+      - OpenWakeWord 2.1.0
+
 
 ## 1.1.99 2025-10-09 <dave at tiredofit dot ca>
 
